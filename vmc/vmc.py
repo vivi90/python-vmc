@@ -74,9 +74,9 @@ class Bone:
 
 class Position:
     def __init__(self, x: float, y: float, z: float) -> None:
-        self.x = x
-        self.y = y
-        self.z = z
+        self.x = float(x)
+        self.y = float(y)
+        self.z = float(z)
     
     def __str__(self) -> str:
         return ", ".join(
@@ -90,10 +90,10 @@ class Position:
 class Quaternion:
     def __init__(self, x: float, y: float, z: float, w: float) -> None:
         if round(pow(x, 2) + pow(y, 2) + pow(z, 2) + pow(w, 2), 1) == 1:
-            self.x = x
-            self.y = y
-            self.z = z
-            self.w = w
+            self.x = float(x)
+            self.y = float(y)
+            self.z = float(z)
+            self.w = float(w)
         else:
             raise ValueError(
                 "Invalid quaternion values: x={}, y={}, z={}, w={}".format(
@@ -172,14 +172,14 @@ class Quaternion:
         return degrees(x), degrees(y), degrees(z)
 
     def __str__(self) -> str:
-        return "(" + ", ".join(
+        return ", ".join(
             (
                 str(self.x), 
                 str(self.y), 
                 str(self.z), 
                 str(self.w)
             )
-        ) + ")"
+        )
 
 class Assistant(OSCClient):
     def __init__(self, host: str, port: int, name: str) -> None:
