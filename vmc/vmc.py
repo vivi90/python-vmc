@@ -5,6 +5,7 @@ import time
 from math import radians, degrees, cos, sin, atan2, asin, pow, floor
 
 class Bone:
+    # 55 VRM bones
     valid_names = (
         "Hips",
         "LeftUpperLeg",
@@ -77,7 +78,24 @@ class Position:
         self.x = float(x)
         self.y = float(y)
         self.z = float(z)
-    
+
+    @classmethod
+    def identity(cls) -> 'Position':
+        """Creates an identity position and returns it
+
+        Returns:
+            Position: Created identity position (x, y, z, w)
+
+        >>> Position.identity()
+        0.0, 0.0, 0.0
+
+        """
+        return cls(
+            x = float(0.0),
+            y = float(0.0),
+            z = float(0.0)
+        )
+
     def __str__(self) -> str:
         return ", ".join(
             (
@@ -103,6 +121,24 @@ class Quaternion:
                     w
                 )
             )
+
+    @classmethod
+    def identity(cls) -> 'Quaternion':
+        """Creates an identity quaternion and returns it
+
+        Returns:
+            Quaternion: Created identity quaternion (x, y, z, w)
+
+        >>> Quaternion.identity()
+        0.0, 0.0, 0.0, 1.0
+
+        """
+        return cls(
+            x = float(0.0),
+            y = float(0.0),
+            z = float(0.0),
+            w = float(1.0)
+        )
     
     @classmethod
     def from_euler(cls, 
@@ -119,8 +155,8 @@ class Quaternion:
         Returns:
             Quaternion: Created quaternion (x, y, z, w)
 
-        >>> str(Quaternion.from_euler(-90, -180, 90, 12))
-        '(0.5, -0.5, -0.5, 0.5)'
+        >>> Quaternion.from_euler(-90, -180, 90, 12)
+        0.5, -0.5, -0.5, 0.5
 
         .. _Source:
             https://www.meccanismocomplesso.org/en/hamiltons-quaternions-and-3d-rotation-with-python
@@ -149,8 +185,8 @@ class Quaternion:
         Returns:
             tuple[float, float, float]: (x, y, z)
 
-        >>> str(Quaternion.from_euler(-90, -180, 90, 12).to_euler())
-        (90.0, 0.0, -90.0)
+        >>> Quaternion.from_euler(-90, -180, 90, 12).to_euler()
+        90.0, 0.0, -90.0
 
         .. _Source:
             https://www.meccanismocomplesso.org/en/hamiltons-quaternions-and-3d-rotation-with-python
@@ -170,6 +206,48 @@ class Quaternion:
         t4 = 1 - 2 * (self.y * self.y + self.z * self.z)
         z = atan2(t3, t4)
         return degrees(x), degrees(y), degrees(z)
+
+    def conjugate(self) -> 'Quaternion':
+        """Quaternion conjugation
+
+        Returns:
+            Quaternion: Conjugated quaternion (x, y, z, w)
+
+        >>> Quaternion.from_euler(90, -90, 90, 12).conjugate().to_euler()
+        180.0, -90.0, 180.0
+
+        .. _Source:
+            https://www.meccanismocomplesso.org/en/hamiltons-quaternions-and-3d-rotation-with-python
+
+        """
+        # Calculation
+        return Quaternion(
+            x = -self.x, 
+            y = -self.y, 
+            z = -self.z, 
+            w = self.w
+        )
+
+    def multiply_by(self, quaternion: 'Quaternion',  precision: int) -> 'Quaternion':
+        """Quaternion multiplication
+
+        Returns:
+            Quaternion: Multiplication product quaternion (x, y, z, w)
+
+        >>> Quaternion.identity().multiply_by(Quaternion.from_euler(90, 0, 0, 12), 12)
+        0.707106781187, 0.0, 0.0, 0.707106781187
+
+        .. _Source:
+            https://www.meccanismocomplesso.org/en/hamiltons-quaternions-and-3d-rotation-with-python
+
+        """
+        # Calculation
+        return Quaternion(
+            x = float(round(self.w * quaternion.x + self.x * quaternion.w + self.y * quaternion.z - self.z * quaternion.y, precision)),
+            y = float(round(self.w * quaternion.y + self.y * quaternion.w + self.z * quaternion.x - self.x * quaternion.z, precision)),
+            z = float(round(self.w * quaternion.z + self.z * quaternion.w + self.x * quaternion.y - self.y * quaternion.x, precision)),
+            w = float(round(self.w * quaternion.w - self.x * quaternion.x - self.y * quaternion.y - self.z * quaternion.z, precision))
+        )
 
     def __str__(self) -> str:
         return ", ".join(
