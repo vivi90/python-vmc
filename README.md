@@ -1,6 +1,6 @@
 # Virtual Motion Capture protocol package for Python
 
-WARNING: This package is still a draft in active development.
+WARNING: This package is still a broken draft (NOT maintained anymore).
 
 ## License
 This project is free under the terms of the CC BY 4.0 license. 
