@@ -90,7 +90,10 @@ vrm_swapped_bone_names = {
     22 : "RightMiddleProximal" # R_hand
 }
 
-#vrm_bone_names = vrm_swapped_bone_names
+"""
+# Swap bones (wrong)
+vrm_bone_names = vrm_swapped_bone_names
+"""
 
 # VMC
 vmc = VMCAssistant(connection['host'], connection['port'], connection['name'])
@@ -100,9 +103,17 @@ for index, rotation in enumerate(smpl_rotations_by_axis):
     rotation = r.from_rotvec(rotation).as_quat()
     rotation = Quaternion(rotation[0], rotation[1], rotation[2],  rotation[3])
     """
-    if bone_name in ("LeftShoulder", "LeftUpperArm", "LeftLowerArm", "LeftHand", "LeftMiddleProximal",
+    # Calculate additional rotation of some bones (y-90 degrees) (Wrong)
+    if bone_name in (#"LeftShoulder", "LeftUpperArm", "LeftLowerArm", "LeftHand", "LeftMiddleProximal",
                      "RightShoulder", "RightUpperArm", "RightLowerArm", "RightHand", "RightMiddleProximal"):
-        rotation = rotation.conjugate()
+        rotation = r.from_quat([rotation.x, rotation.y, rotation.z, rotation.w])
+        rotation = rotation.as_euler('xyz', degrees=True)
+        print(rotation)
+        rotation = r.from_euler('xyz', [rotation[0], rotation[1]-90, rotation[2]], degrees=True)
+        print(rotation.as_euler('xyz', degrees=True))
+        rotation = rotation.as_quat()
+        rotation = Quaternion(rotation[0], rotation[1], rotation[2],  rotation[3])
+        #rotation = rotation.multiply_by(Quaternion.from_euler(0, -90, 0, 12), 12)
     """
     bones.append(
         [
@@ -147,6 +158,14 @@ bones += [
     [Bone("RightLittleIntermediate"), Position(0.0, 0.0, 0.0), Quaternion(0.0, 0.0, 0.0, 1.0)],
     [Bone("RightLittleDistal"), Position(0.0, 0.0, 0.0), Quaternion(0.0, 0.0, 0.0, 1.0)]
 ]
+"""
+# Apply correctly roatated values by y-90 degrees (wrong)
+bones[14][2] = Quaternion(x=-0.038144, y=0.828361, z=0.05417, w=0.556263) # RightShoulder / R_Collar: -7.18492d, 112.225d, 0.443739d
+bones[17][2] = Quaternion(x=-0.248151, y=0.863098, z=0.131794, w=0.419659) # RightUpperArm / R_Shoulder: -1.79611d, 127.831d, 31.2018d
+bones[19][2] = Quaternion(x=0.433544, y=0.602222, z=0.266302, w=0.615184) # RightLowerArm / R_Elbow: -83.239d, 149.333d, -98.8831d
+bones[21][2] = Quaternion(x=0.040907, y=0.772052, z=-0.019798, w=0.633933) # RightHand / R_Wrist: -6.21696d, 101.34d, -11.1615d
+"""
+# Sending
 vmc.send_root_transform(
     Position(smpl_root_position[0], smpl_root_position[1], smpl_root_position[2]),
     bones[0][2].multiply_by(Quaternion.from_euler(0, 90, 0, 12), 12) # Hips / Pelvis rotation

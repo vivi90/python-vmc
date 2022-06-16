@@ -1,6 +1,11 @@
 # Virtual Motion Capture protocol package for Python
 
 WARNING: This package is still a draft in active development.
+![Current state](state.png)
+Also the vmc protocol communication is unstable because of [bad timestamps](https://github.com/emilianavt/VSeeFaceReleases/issues/15).
+
+## Testing
+Using [`romp_test.py`](https://github.com/vivi90/python-vmc/blob/main/vmc/romp_test.py).
 
 ## License
 This project is free under the terms of the CC BY 4.0 license. 
