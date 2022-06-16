@@ -1,6 +1,6 @@
 # Virtual Motion Capture protocol package for Python
 
-WARNING: This package is still a draft in active development.
+WARNING: This package is still a broken draft (NOT maintained anymore).
 ![Current state](state.png)
 Also the vmc protocol communication is unstable because of [bad timestamps](https://github.com/emilianavt/VSeeFaceReleases/issues/15).
 
