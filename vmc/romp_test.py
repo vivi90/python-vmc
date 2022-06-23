@@ -2,16 +2,18 @@
 
 from log import Log
 import sys
-from vmc import Assistant as VMCAssistant, Bone, Position, Quaternion
+from configuration import Configuration
+from vmc import Assistant as VMCAssistant, Bone, Position, Quaternion, Timestamp
 import numpy as np
 import romp, cv2
 from scipy.spatial.transform import Rotation as r
 
 # Configuration
-connection = {
-    "host" : "localhost",
-    "port" : 39539,
-    "name" : "example"
+configuration: dict = {
+    "host"  : "localhost",
+    "port"  : 39539,
+    "name"  : "example",
+    "delta" : 0.0
 }
 
 # Logging
@@ -96,7 +98,13 @@ vrm_bone_names = vrm_swapped_bone_names
 """
 
 # VMC
-vmc = VMCAssistant(connection['host'], connection['port'], connection['name'])
+configuration = Configuration("vmc.yml", configuration)
+vmc = VMCAssistant(
+    configuration['host'], 
+    configuration["port"], 
+    configuration["name"]
+)
+started_at = Timestamp()
 bones = []
 for index, rotation in enumerate(smpl_rotations_by_axis):
     bone_name = vrm_bone_names[index]
@@ -168,8 +176,10 @@ bones[21][2] = Quaternion(x=0.040907, y=0.772052, z=-0.019798, w=0.633933) # Rig
 # Sending
 vmc.send_root_transform(
     Position(smpl_root_position[0], smpl_root_position[1], smpl_root_position[2]),
-    bones[0][2].multiply_by(Quaternion.from_euler(0, 90, 0, 12), 12) # Hips / Pelvis rotation
+    bones[0][2].multiply_by(Quaternion.from_euler(0, 90, 0, 12), 12) # Hips / Pelvis rotation y+90 degree
 )
 vmc.send_bones_transform(bones)
 vmc.send_available_states(1)
-vmc.send_relative_time()
+delta = started_at.delta(configuration["delta"])
+vmc.send_relative_time(delta)
+configuration["delta"] = delta

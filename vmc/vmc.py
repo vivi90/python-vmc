@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from osc import Client as OSCClient
-import time
+from time import time
 from math import radians, degrees, cos, sin, atan2, asin, pow, floor
 
 class Bone:
@@ -259,9 +259,28 @@ class Quaternion:
             )
         )
 
+class Timestamp(float):
+    def __new__(self) -> None:
+        return super().__new__(self, time())
+
+    def delta(self, offset: float = 0.0, precision: int = 6) -> float:
+        """Returns time delta in seconds with it's fractions as float 
+
+        Args:
+            offset (float): Delta offset (Default: 0.0)
+            precision (int): Round the results to 'precision' digits after the decimal point (Default: 6)
+
+        Returns:
+            float: Time delta in seconds with it's fractions
+
+        >>> Timestamp().delta()
+        0.0
+
+        """
+        return round(offset + time() - self, precision)
+
 class Assistant(OSCClient):
     def __init__(self, host: str, port: int, name: str) -> None:
-        self.started_at = time.time()
         super().__init__(host, port, name)
 
     def send_root_transform(self, position: Position, 
@@ -328,11 +347,11 @@ class Assistant(OSCClient):
                 ]
             )
 
-    def send_relative_time(self) -> None:
+    def send_relative_time(self, delta: float) -> None:
         self.send(
             "/VMC/Ext/T",
             None,
             [
-                float(time.time() - self.started_at)
+                delta
             ]
         )

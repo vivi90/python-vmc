@@ -4,10 +4,11 @@
 
 WARNING: This package is still a broken draft.
 ![Current state](state.png)
-Also the vmc protocol communication is unstable because of [bad timestamps](https://github.com/emilianavt/VSeeFaceReleases/issues/15).
 
 ## Testing
 Using [`romp_test.py`](https://github.com/vivi90/python-vmc/blob/main/vmc/romp_test.py).
+
+Note: Your receiving application might require [at least 3 sending attempts at the beginning, because of movement smoothing](https://github.com/emilianavt/VSeeFaceReleases/issues/15#issuecomment-1164759944).
 
 ## Project state meanings
  * **Unstable:** Still an *possibly* broken draft or breaking issues are known.
