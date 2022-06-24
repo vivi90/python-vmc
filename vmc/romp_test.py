@@ -10,7 +10,7 @@ from scipy.spatial.transform import Rotation as r
 
 # Configuration
 configuration: dict = {
-    "host"  : "localhost",
+    "host"  : "127.0.0.1",
     "port"  : 39539,
     "name"  : "example",
     "delta" : 0.0
