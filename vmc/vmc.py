@@ -303,9 +303,18 @@ class Assistant(OSCClient):
 
     def send_bones_transform(self,
                              transform: list[list[Bone, Position, Quaternion]]
-                            )-> None:
+                            ) -> None:
         self.send_bundle(
             "/VMC/Ext/Bone/Pos",
+            None,
+            transform
+        )
+
+    def send_tracker_transform(self,
+                             transform: list[list[str, Position, Quaternion]]
+                            ) -> None:
+        self.send_bundle(
+            "/VMC/Ext/Tra/Pos",
             None,
             transform
         )
