@@ -2,7 +2,7 @@
 [![License: CC BY 4.0](https://img.shields.io/badge/%E2%9A%96%EF%B8%8F-CC%20BY%204.0-brightgreen)](https://creativecommons.org/licenses/by/4.0)
 [![State: Unstable](https://img.shields.io/badge/State-Unstable-yellow.svg)](https://github.com/vivi90/python-vmc/issues)
 
-WARNING: This package is still a broken draft.
+WARNING: This package is still a draft, but working now ;)
 ![Current state](state.png)
 
 ## Testing
