@@ -22,23 +22,23 @@ sys.stderr = Log(filename = "vmc.log", is_error = True)
 
 # ROMP
 settings = romp.main.default_settings
-
 subject_id = 0
+root_position_offset = Position(0.0, 1.5, 0.0) # Align how you like
+#hips_bone_position = Position(0, 0.003576, 0.939207) # Initial position in model
+hips_bone_position = Position(0.0, 0.0, 0.0)
 romp_model = romp.ROMP(settings)
 
 # Input
-#outputs = romp_model(cv2.imread('pose.png')) # Test1
+outputs = romp_model(cv2.imread('pose.png')) # Test1
 #outputs = romp_model(cv2.imread('00000215.png')) # Test2
 #outputs = romp_model(cv2.imread('test2.png')) # Test3
-outputs = romp_model(cv2.imread('00000119.png')) # Test4
+#outputs = romp_model(cv2.imread('00000119.png')) # Test4
 
 smpl_root_rotation = outputs["cam"][subject_id]
 smpl_root_rotation = R.from_rotvec(smpl_root_rotation).as_quat()
 smpl_root_rotation = Quaternion(-smpl_root_rotation[0], smpl_root_rotation[1], smpl_root_rotation[2], smpl_root_rotation[3]).conjugate()
 
 smpl_root_position = outputs["cam_trans"][subject_id]
-#hips_bone_position = Position(0, 0.003576, 0.939207) # Bone position in model
-hips_bone_position = Position(0, 0, 0)
 
 smpl_rotations_by_axis = outputs["smpl_thetas"][subject_id].reshape(24, 3)
 
@@ -95,9 +95,9 @@ for index, rot in enumerate(smpl_rotations_by_axis):
 # Sending
 vmc.send_root_transform(
     Position(
-        -smpl_root_position[0] - hips_bone_position.x,
-        1.0, #-smpl_root_position[1] - hips_bone_position.y,
-        -smpl_root_position[2] - hips_bone_position.z
+        -smpl_root_position[0] - hips_bone_position.x + root_position_offset.x,
+        -smpl_root_position[1] - hips_bone_position.y + root_position_offset.y,
+        -smpl_root_position[2] - hips_bone_position.z + root_position_offset.z
     ), 
     Quaternion.identity().multiply_by(Quaternion.from_euler(-180, 0, 0, 12), 12)
 )
