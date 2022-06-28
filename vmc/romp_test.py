@@ -24,7 +24,7 @@ sys.stderr = Log(filename = "vmc.log", is_error = True)
 settings = romp.main.default_settings
 subject_id = 0
 root_position_offset = Position(0.0, 1.5, 0.0) # Align how you like
-#hips_bone_position = Position(0, 0.003576, 0.939207) # Initial position in model
+#hips_bone_position = Position(0, 0.939207, 0.003576) # Initial position in model
 hips_bone_position = Position(0.0, 0.0, 0.0)
 romp_model = romp.ROMP(settings)
 
